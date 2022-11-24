@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const studentSchema = new mongoose.Schema(
   {
@@ -10,7 +10,7 @@ const studentSchema = new mongoose.Schema(
     },
     parent: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: 'users',
     },
     nid: {
       type: String,
@@ -46,7 +46,7 @@ const studentSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      default: "student",
+      default: 'student',
     },
   },
   {
@@ -54,4 +54,4 @@ const studentSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Student", studentSchema);
+module.exports = mongoose.model('Student', studentSchema);
