@@ -2,23 +2,22 @@ const mongoose = require('mongoose');
 
 const studentSchema = new mongoose.Schema(
   {
-    userName: {
+    namaLengkap: {
       type: String,
       require: true,
       trim: true,
-      unique: true,
     },
     parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users',
     },
-    nid: {
+    nis: {
       type: String,
       require: true,
       trim: true,
       unique: true,
     },
-    name: {
+    kelas: {
       type: String,
       require: true,
       trim: true,
@@ -30,10 +29,6 @@ const studentSchema = new mongoose.Schema(
       unique: true,
     },
     password: {
-      type: String,
-      require: true,
-    },
-    address: {
       type: String,
       require: true,
     },

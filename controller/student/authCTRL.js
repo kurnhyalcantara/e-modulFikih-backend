@@ -6,51 +6,37 @@ const jwt = require('jsonwebtoken');
 const authCTRL = {
   register: async (req, res) => {
     try {
-      const { userName, nid, name, mobile, password, rePassword, address } =
-        req.body;
+      const { namaLengkap, nis, kelas, mobile, password } = req.body;
 
-      if (
-        !userName ||
-        !nid ||
-        !name ||
-        !mobile ||
-        !password ||
-        !rePassword ||
-        !address
-      ) {
+      if (!namaLengkap || !nis || !kelas || !mobile || !password) {
         return res
           .status(400)
           .json({ msg: 'Harap isi semua data yang dibutuhkan' });
       }
 
-      const parent = await Parent.findOne({ nid });
-      if (!parent) {
-        return res.status(400).json({ msg: 'This NID Not Exists.' });
-      }
-      if (parent.mobile !== mobile) {
-        return res.status(400).json({ msg: 'Mobile Number Not Matched.' });
-      }
-      const existingUser = await Student.findOne({ userName });
+      // const parent = await Parent.findOne({ nid });
+      // if (!parent) {
+      //   return res.status(400).json({ msg: 'This NID Not Exists.' });
+      // }
+      // if (parent.mobile !== mobile) {
+      //   return res.status(400).json({ msg: 'Mobile Number Not Matched.' });
+      // }
+      const existingUser = await Student.findOne({ nis });
       if (existingUser) {
-        return res.status(400).json({ msg: 'This User Already Exists.' });
+        return res.status(400).json({ msg: 'Akun sudah terdaftar' });
       }
       if (password.length < 4) {
         return res
           .status(400)
-          .json({ msg: 'Password must be 4 lengths long.' });
-      }
-      if (password !== rePassword) {
-        return res.status(400).json({ msg: "Password Doesn't Match." });
+          .json({ msg: 'Password harus lebih dari 4 karakter' });
       }
       const hashPass = await bcrypt.hash(password, 10);
       const newStudent = new Student({
-        userName,
-        parent: parent._id,
-        nid,
-        name,
+        namaLengkap,
+        nis,
+        kelas,
         mobile,
         password: hashPass,
-        address,
       });
 
       await newStudent.save();
@@ -74,11 +60,11 @@ const authCTRL = {
   refreshToken: async (req, res) => {
     const rf_token = req.cookies.refreshToken;
     if (!rf_token) {
-      return res.status(400).json({ msg: 'Please Login or Register.' });
+      return res.status(400).json({ msg: 'Silahkan Login atau Buat Akun' });
     }
     jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, student) => {
       if (err) {
-        return res.status(400).json({ msg: 'Please Login or Register.' });
+        return res.status(400).json({ msg: 'Silahkan Login atau Buat Akun' });
       }
       const accessToken = createAccessToken({ id: student.id });
 
