@@ -1,5 +1,4 @@
 const Student = require('../../model/studentsModel');
-const Parent = require('../../model/parentsModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -73,17 +72,19 @@ const authCTRL = {
   },
   login: async (req, res) => {
     try {
-      const { userName, password } = req.body;
-      if (!userName || !password) {
-        return res.status(400).json({ msg: 'Invalid Creadential.' });
+      const { nis, password } = req.body;
+      if (!nis || !password) {
+        return res
+          .status(400)
+          .json({ msg: 'Harap masukkan data dengan benar' });
       }
-      const user = await Student.findOne({ userName });
+      const user = await Student.findOne({ nis });
       if (!user) {
-        return res.status(400).json({ msg: "User Doesn't Exists." });
+        return res.status(400).json({ msg: 'Akun tidak terdaftar' });
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ msg: 'Incorrect Password.' });
+        return res.status(400).json({ msg: 'Password tidak cocok.' });
       }
 
       const accessToken = createAccessToken({ id: user._id });
@@ -108,7 +109,7 @@ const authCTRL = {
         // secure: true,
         // sameSite: "none",
       });
-      return res.json({ msg: 'Logged Out' });
+      return res.json({ msg: 'Anda telah logout' });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
