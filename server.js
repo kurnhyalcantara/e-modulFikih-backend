@@ -11,7 +11,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'https://fikih-mtsbontouse.web.app'],
+    // origin: ['http://localhost:3000', 'https://fikih-mtsbontouse.web.app'],
+    origin: true,
     credentials: true,
     // allowedHeaders: ['Content-Type', 'Authorization'],
   })
