@@ -13,7 +13,7 @@ app.use(
   cors({
     origin: ['http://localhost:3000', 'https://fikih-mtsbontouse.web.app'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    // allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 app.use(
