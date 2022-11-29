@@ -15,6 +15,7 @@ app.use(
     allowedHeaders: [
       'Content-Type',
       'Authorization',
+      'Access-Control-Allow-Origin',
       'Access-Control-Allow-Methods',
       'Access-Control-Request-Headers',
     ],
