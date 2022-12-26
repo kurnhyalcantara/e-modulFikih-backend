@@ -93,7 +93,10 @@ const authCTRL = {
         // sameSite: "none",
       });
 
-      res.json({ accessToken, user: { name: user.name, nis: user.nis } });
+      res.json({
+        accessToken,
+        user: { name: user.namaLengkap, nis: user.nis },
+      });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
