@@ -12,14 +12,6 @@ const authCTRL = {
           .status(400)
           .json({ msg: 'Harap isi semua data yang dibutuhkan' });
       }
-
-      // const parent = await Parent.findOne({ nid });
-      // if (!parent) {
-      //   return res.status(400).json({ msg: 'This NID Not Exists.' });
-      // }
-      // if (parent.mobile !== mobile) {
-      //   return res.status(400).json({ msg: 'Mobile Number Not Matched.' });
-      // }
       const existingUser = await Student.findOne({ nis });
       if (existingUser) {
         return res.status(400).json({ msg: 'Akun sudah terdaftar' });
@@ -50,7 +42,7 @@ const authCTRL = {
 
       res.json({
         accessToken,
-        user: { name: newStudent.name, type: newStudent.type },
+        user: { name: newStudent.name, nis: newStudent.nis },
       });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
@@ -96,7 +88,7 @@ const authCTRL = {
         // sameSite: "none",
       });
 
-      res.json({ accessToken, user: { name: user.name, type: user.type } });
+      res.json({ accessToken, user: { name: user.name, nis: user.nis } });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }

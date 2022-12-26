@@ -7,10 +7,6 @@ const studentSchema = new mongoose.Schema(
       require: true,
       trim: true,
     },
-    parent: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'users',
-    },
     nis: {
       type: String,
       require: true,
@@ -38,10 +34,6 @@ const studentSchema = new mongoose.Schema(
     },
     image: {
       type: Object,
-    },
-    type: {
-      type: String,
-      default: 'student',
     },
   },
   {
