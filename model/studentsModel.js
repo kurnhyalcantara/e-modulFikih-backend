@@ -7,22 +7,38 @@ const studentSchema = new mongoose.Schema(
       require: true,
       trim: true,
     },
-    nis: {
+    namaPanggilan: {
       type: String,
-      require: true,
       trim: true,
-      unique: true,
+    },
+    sekolah: {
+      type: String,
+      trim: true,
     },
     kelas: {
       type: String,
       require: true,
       trim: true,
     },
+    nis: {
+      type: String,
+      require: true,
+      trim: true,
+      unique: true,
+    },
     mobile: {
       type: String,
       require: true,
       trim: true,
       unique: true,
+    },
+    tanggalLahir: {
+      type: String,
+      default: '01-01-2010',
+    },
+    jenisKelamin: {
+      type: String,
+      default: 'male',
     },
     password: {
       type: String,
