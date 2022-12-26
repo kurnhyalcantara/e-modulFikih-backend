@@ -12,13 +12,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: ['http://localhost:3000', 'https://fikih-mtsbontouse.web.app'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'Access-Control-Allow-Origin',
-      'Access-Control-Allow-Methods',
-      'Access-Control-Request-Headers',
-    ],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
     enablePreflight: true,
   })

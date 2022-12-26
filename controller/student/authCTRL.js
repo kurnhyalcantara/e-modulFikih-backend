@@ -12,6 +12,11 @@ const authCTRL = {
           .status(400)
           .json({ msg: 'Harap isi semua data yang dibutuhkan' });
       }
+      const firstNumberInMobile = mobile.charAt(0);
+      if (firstNumberInMobile === '0') {
+        newMobileNumber = mobile.substr(1);
+        console.log(newMobileNumber);
+      }
       const existingUser = await Student.findOne({ nis });
       if (existingUser) {
         return res.status(400).json({ msg: 'Akun sudah terdaftar' });
@@ -26,7 +31,7 @@ const authCTRL = {
         namaLengkap,
         nis,
         kelas,
-        mobile,
+        mobile: newMobileNumber,
         password: hashPass,
       });
 
@@ -42,7 +47,7 @@ const authCTRL = {
 
       res.json({
         accessToken,
-        user: { name: newStudent.name, nis: newStudent.nis },
+        user: { name: newStudent.namaLengkap, nis: newStudent.nis },
       });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
