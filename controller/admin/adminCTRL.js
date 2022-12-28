@@ -1,32 +1,32 @@
-const Admin = require("../../model/adminModel");
-const Instructor = require("../../model/instructorModel");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const Admin = require('../../model/adminModel');
+const Instructor = require('../../model/instructorModel');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const adminCTRL = {
   register: async (req, res) => {
     try {
-      const { userName, name, mobile, email, password, rePassword } = req.body;
+      const { username, name, mobile, email, password, rePassword } = req.body;
 
-      if (!userName || !password || !rePassword) {
-        return res.status(400).json({ msg: "Invalid Creadentials." });
+      if (!username || !password || !rePassword) {
+        return res.status(400).json({ msg: 'Invalid Creadentials.' });
       }
 
-      const existingUser = await Admin.findOne({ userName });
+      const existingUser = await Admin.findOne({ username });
       if (existingUser) {
-        return res.status(400).json({ msg: "This User Already Exists." });
+        return res.status(400).json({ msg: 'This User Already Exists.' });
       }
       if (password.length < 4) {
         return res
           .status(400)
-          .json({ msg: "Password must be 4 lengths long." });
+          .json({ msg: 'Password must be 4 lengths long.' });
       }
       if (password !== rePassword) {
         return res.status(400).json({ msg: "Password Doesn't Match." });
       }
       const hashPass = await bcrypt.hash(password, 10);
       const newAdmin = new Admin({
-        userName,
+        username,
         name,
         mobile,
         email,
@@ -37,7 +37,7 @@ const adminCTRL = {
       const accessToken = createAccessToken({ id: newAdmin._id });
       const refreshToken = createRefreshToken({ id: newAdmin._id });
 
-      res.cookie("refreshToken", refreshToken, {
+      res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         // secure: true,
         // sameSite: "none",
@@ -45,7 +45,11 @@ const adminCTRL = {
 
       res.json({
         accessToken,
-        user: { name: newAdmin.userName, type: newAdmin.type },
+        user: {
+          username: newAdmin.username,
+          name: newAdmin.name,
+          type: newAdmin.type,
+        },
       });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
@@ -54,11 +58,11 @@ const adminCTRL = {
   refreshToken: async (req, res) => {
     const rf_token = req.cookies.refreshToken;
     if (!rf_token) {
-      return res.status(400).json({ msg: "Please Login or Register." });
+      return res.status(400).json({ msg: 'Please Login or Register.' });
     }
     jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, admin) => {
       if (err) {
-        return res.status(400).json({ msg: "Please Login or Register." });
+        return res.status(400).json({ msg: 'Please Login or Register.' });
       }
       const accessToken = createAccessToken({ id: admin.id });
 
@@ -67,49 +71,56 @@ const adminCTRL = {
   },
   login: async (req, res) => {
     try {
-      const { userName, password } = req.body;
-      if (!userName || !password) {
-        return res.status(400).json({ msg: "Invalid Creadential." });
+      const { username, password } = req.body;
+      if (!username || !password) {
+        return res.status(400).json({ msg: 'Invalid Creadential.' });
       }
-      const user = await Admin.findOne({ userName });
+      const user = await Admin.findOne({ username });
       if (!user) {
         return res.status(400).json({ msg: "User Doesn't Exists." });
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ msg: "Incorrect Password." });
+        return res.status(400).json({ msg: 'Incorrect Password.' });
       }
 
       const accessToken = createAccessToken({ id: user._id });
       const refreshToken = createRefreshToken({ id: user._id });
 
-      res.cookie("refreshToken", refreshToken, {
+      res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         // secure: true,
         // sameSite: "none",
       });
 
-      res.json({ accessToken, user: { name: user.userName, type: user.type } });
+      res.json({
+        accessToken,
+        user: {
+          username: user.username,
+          name: user.name,
+          type: user.type,
+        },
+      });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
   },
   logout: async (req, res) => {
     try {
-      res.clearCookie("refreshToken", {
+      res.clearCookie('refreshToken', {
         httpOnly: true,
         expires: new Date(0),
         // secure: true,
         // sameSite: "none",
       });
-      return res.json({ msg: "Logged Out" });
+      return res.json({ msg: 'Logged Out' });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
   },
   getUser: async (req, res) => {
     try {
-      const admin = await Admin.findById(req.user.id).select("-password");
+      const admin = await Admin.findById(req.user.id).select('-password');
       if (!admin) {
         return res.status(400).json({ msg: "User Doesn't Exists." });
       }
@@ -120,7 +131,7 @@ const adminCTRL = {
   },
   instructorList: async (req, res) => {
     try {
-      const instructors = await Instructor.find().select("-password");
+      const instructors = await Instructor.find().select('-password');
       res.json({ instructors });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
@@ -133,7 +144,7 @@ const adminCTRL = {
         { _id: req.params.instructor_id },
         { status }
       );
-      res.json({ msg: "Updated" });
+      res.json({ msg: 'Updated' });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
@@ -142,13 +153,13 @@ const adminCTRL = {
 
 const createAccessToken = (admin) => {
   return jwt.sign(admin, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "1d",
+    expiresIn: '1d',
   });
 };
 
 const createRefreshToken = (admin) => {
   return jwt.sign(admin, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: "7d",
+    expiresIn: '7d',
   });
 };
 

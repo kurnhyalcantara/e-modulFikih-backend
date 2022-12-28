@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const adminSchema = new mongoose.Schema(
   {
-    userName: {
+    username: {
       type: String,
       require: true,
       trim: true,
@@ -28,7 +28,7 @@ const adminSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      default: "admin",
+      default: 'admin',
     },
   },
   {
@@ -36,4 +36,4 @@ const adminSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Admin", adminSchema);
+module.exports = mongoose.model('Admin', adminSchema);
