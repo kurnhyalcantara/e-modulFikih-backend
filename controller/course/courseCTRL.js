@@ -40,22 +40,31 @@ const courseCTRL = {
     try {
       const {
         title,
-        price,
-        category,
-        description,
-        about,
         banner,
-        objective,
-        requirements,
+        kelas,
+        semester,
+        jumlahPertemuan,
+        category,
+        alokasiWaktu,
+        brief,
+        kompetensiDasar,
+        indikatorPencapaianKompetensi,
+        metode,
+        description,
       } = req.body;
       if (
         !title ||
-        !price ||
+        !banner ||
+        !kelas ||
+        !semester ||
+        !jumlahPertemuan ||
         !category ||
-        !description ||
-        !about ||
-        !objective ||
-        !requirements
+        !alokasiWaktu ||
+        !brief ||
+        !kompetensiDasar ||
+        !indikatorPencapaianKompetensi ||
+        !metode ||
+        !description
       ) {
         return res.status(400).json({ msg: 'Invalid Course Credentials.' });
       }
@@ -65,19 +74,23 @@ const courseCTRL = {
       const user = req.user.id;
       const admin = await Admin.findOne({ _id: user }).select('-password');
       const newCourse = new Course({
-        creator: admin.username,
+        creator: user,
         title,
-        price,
-        description,
-        about,
-        objective,
-        requirements,
-        instructor: admin,
         banner,
+        kelas,
+        semester,
+        jumlahPertemuan,
         category,
+        alokasiWaktu,
+        brief,
+        kompetensiDasar,
+        indikatorPencapaianKompetensi,
+        metode,
+        description,
+        instructor: admin,
       });
       await newCourse.save();
-      res.json({ msg: 'Created a Course.' });
+      res.json({ msg: 'Created a Course.', course: newCourse });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }

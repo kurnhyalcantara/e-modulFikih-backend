@@ -1,5 +1,28 @@
 const mongoose = require('mongoose');
 
+const commentSchema = mongoose.Schema(
+  {
+    rating: {
+      type: Number,
+      required: true,
+    },
+    comment: {
+      type: String,
+      required: true,
+    },
+    author: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: Object,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 const courseSchema = mongoose.Schema(
   {
     creator: {
@@ -15,7 +38,7 @@ const courseSchema = mongoose.Schema(
       type: Object,
       require: true,
     },
-    class: {
+    kelas: {
       type: String,
       require: true,
     },
@@ -29,61 +52,48 @@ const courseSchema = mongoose.Schema(
       trim: true,
     },
     category: {
-      type: String,
+      type: Array,
+      default: [],
       require: true,
     },
-    alokasiWaktu: {},
+    alokasiWaktu: {
+      type: Number,
+      require: true,
+      trim: true,
+    },
     jumlahSiswa: {
       type: Number,
       trim: true,
+      default: 0,
+    },
+    brief: {
+      type: String,
+      trim: true,
+    },
+    kompetensiDasar: {
+      type: Array,
+      default: [],
+      require: true,
+    },
+    indikatorPencapaianKompetensi: {
+      type: Array,
+      default: [],
+      require: true,
+    },
+    metode: {
+      type: Array,
+      default: [],
       require: true,
     },
     description: {
       type: String,
       require: true,
     },
-    about: {
-      type: String,
-      require: true,
-    },
-
-    enrolled: {
-      type: Number,
-      default: 0,
-    },
-    objective: {
-      type: Array,
-      default: [],
-    },
-    requirements: {
-      type: Array,
-      default: [],
-    },
     instructor: {
       type: Object,
       require: true,
     },
-    comments: [commentSchema],
-  },
-  {
-    timestamps: true,
-  }
-);
-
-const commentSchema = mongoose.Schema(
-  {
-    rating: {
-      type: Number,
-      required: true,
-    },
-    comment: {
-      type: String,
-      required: true,
-    },
-    author: {
-      type: String,
-      required: true,
-    },
+    testimoni: [commentSchema],
   },
   {
     timestamps: true,
