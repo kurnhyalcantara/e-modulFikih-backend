@@ -24,19 +24,19 @@ app.use(
 );
 
 // public route
-app.use('/api', require('./routes/parentRoute/tokenRouter'));
+// app.use('/api', require('./routes/parentRoute/tokenRouter'));
 app.use('/api', require('./routes/studentRoute/tokenRouter'));
-app.use('/api', require('./routes/instructorRoute/tokenRouter'));
+// app.use('/api', require('./routes/instructorRoute/tokenRouter'));
 app.use('/api', require('./routes/uploadRoute/uploadRoute'));
 app.use('/api', require('./routes/courseRoute/courseRoute'));
 app.use('/api', require('./routes/courseRoute/taskRoute'));
 app.use('/api', require('./routes/courseRoute/lessonRoute'));
 // parent route
-app.use('/api/parent', require('./routes/parentRoute/authRouter'));
+// app.use('/api/parent', require('./routes/parentRoute/authRouter'));
 //student route
 app.use('/api/student', require('./routes/studentRoute/authRoute'));
 // instructor route
-app.use('/api/instructor', require('./routes/instructorRoute/authRouter'));
+// app.use('/api/instructor', require('./routes/instructorRoute/authRouter'));
 // admin route
 app.use('/api/admin', require('./routes/adminRoute/adminRoute'));
 app.use('/api/admin', require('./routes/adminRoute/courseCategoryRoute'));
