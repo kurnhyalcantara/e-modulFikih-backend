@@ -16,7 +16,7 @@ router.get('/all/course', courseCTRL.getAllCourse);
 router
   .route('/course_details/:course_id')
   .get(courseCTRL.courseDetails)
-  .delete(auth, authInstructor, courseCTRL.deleteCourse)
+  .delete(auth, authAdmin, courseCTRL.deleteCourse)
   .put(auth, authInstructor, courseCTRL.updateCourse);
 
 router

@@ -47,7 +47,6 @@ const courseCTRL = {
         category,
         alokasiWaktu,
         brief,
-        kompetensiDasar,
         indikatorPencapaianKompetensi,
         metode,
         description,
@@ -61,7 +60,6 @@ const courseCTRL = {
         !category ||
         !alokasiWaktu ||
         !brief ||
-        !kompetensiDasar ||
         !indikatorPencapaianKompetensi ||
         !metode ||
         !description
@@ -83,7 +81,6 @@ const courseCTRL = {
         category,
         alokasiWaktu,
         brief,
-        kompetensiDasar,
         indikatorPencapaianKompetensi,
         metode,
         description,
@@ -169,6 +166,14 @@ const courseCTRL = {
       return res.status(500).json({ msg: error.message });
     }
   },
+  deleteCourse: async (req, res) => {
+    try {
+      await Course.findByIdAndDelete(req.params.course_id);
+      res.json({ msg: 'Course is Deleted' });
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
+  },
   reviewCourse: async (req, res) => {
     try {
       const { rating, comment } = req.body;
@@ -218,14 +223,7 @@ const courseCTRL = {
       return res.status(500).json({ msg: error.message });
     }
   },
-  deleteCourse: async (req, res) => {
-    try {
-      await Course.findByIdAndDelete(req.params.course_id);
-      res.json({ msg: 'Course is Deleted' });
-    } catch (error) {
-      return res.status(500).json({ msg: error.message });
-    }
-  },
+
   enrollCourse: async (req, res) => {
     try {
       const user = await Student.findById(req.user.id);
