@@ -1,43 +1,41 @@
-const mongoose = require("mongoose");
-
-const commentSchema = mongoose.Schema(
-  {
-    rating: {
-      type: Number,
-      required: true,
-    },
-    comment: {
-      type: String,
-      required: true,
-    },
-    author: {
-      type: String,
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+const mongoose = require('mongoose');
 
 const courseSchema = mongoose.Schema(
   {
-    user: {
+    creator: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: 'users',
     },
     title: {
       type: String,
       trim: true,
       require: true,
     },
-    price: {
-      type: Number,
-      trim: true,
+    banner: {
+      type: Object,
       require: true,
+    },
+    class: {
+      type: String,
+      require: true,
+    },
+    semester: {
+      type: String,
+      require: true,
+    },
+    jumlahPertemuan: {
+      type: Number,
+      require: true,
+      trim: true,
     },
     category: {
       type: String,
+      require: true,
+    },
+    alokasiWaktu: {},
+    jumlahSiswa: {
+      type: Number,
+      trim: true,
       require: true,
     },
     description: {
@@ -48,10 +46,7 @@ const courseSchema = mongoose.Schema(
       type: String,
       require: true,
     },
-    banner: {
-      type: Object,
-      require: true,
-    },
+
     enrolled: {
       type: Number,
       default: 0,
@@ -75,4 +70,24 @@ const courseSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Course", courseSchema);
+const commentSchema = mongoose.Schema(
+  {
+    rating: {
+      type: Number,
+      required: true,
+    },
+    comment: {
+      type: String,
+      required: true,
+    },
+    author: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+module.exports = mongoose.model('Course', courseSchema);
