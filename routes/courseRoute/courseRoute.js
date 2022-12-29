@@ -8,7 +8,7 @@ const authStudent = require('../../middleware/authStudent');
 router
   .route('/course')
   .post(auth, authAdmin, courseCTRL.createCourse)
-  .get(auth, authInstructor, courseCTRL.instructorCourse);
+  .get(auth, authAdmin, courseCTRL.adminCourse);
 
 router.get('/all_course', courseCTRL.getCourse);
 router.get('/all/course', courseCTRL.getAllCourse);
@@ -16,8 +16,8 @@ router.get('/all/course', courseCTRL.getAllCourse);
 router
   .route('/course_details/:course_id')
   .get(courseCTRL.courseDetails)
-  .delete(auth, authAdmin, courseCTRL.deleteCourse)
-  .put(auth, authInstructor, courseCTRL.updateCourse);
+  .put(auth, authAdmin, courseCTRL.updateCourse)
+  .delete(auth, authAdmin, courseCTRL.deleteCourse);
 
 router
   .route('/course/review/:course_id')

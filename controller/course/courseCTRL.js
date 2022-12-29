@@ -46,7 +46,6 @@ const courseCTRL = {
         jumlahPertemuan,
         category,
         alokasiWaktu,
-        brief,
         indikatorPencapaianKompetensi,
         metode,
         description,
@@ -59,7 +58,6 @@ const courseCTRL = {
         !jumlahPertemuan ||
         !category ||
         !alokasiWaktu ||
-        !brief ||
         !indikatorPencapaianKompetensi ||
         !metode ||
         !description
@@ -80,7 +78,6 @@ const courseCTRL = {
         jumlahPertemuan,
         category,
         alokasiWaktu,
-        brief,
         indikatorPencapaianKompetensi,
         metode,
         description,
@@ -122,26 +119,47 @@ const courseCTRL = {
     }
   },
 
+  courseDetails: async (req, res) => {
+    try {
+      const course_id = req.params.course_id;
+      const courseDetails = await Course.findOne({ _id: course_id });
+      const tasks = await Tasks.find({ course_id: course_id }).select(
+        '-course_id'
+      );
+      const lessons = await Lessons.find({ course_id: course_id }).select(
+        '-course_id'
+      );
+      res.json({ courseDetails: courseDetails, tasks, lessons });
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
+  },
+
   updateCourse: async (req, res) => {
     try {
       const {
         title,
-        price,
-        description,
-        about,
-        objective,
-        requirements,
         banner,
+        kelas,
+        semester,
+        jumlahPertemuan,
         category,
+        alokasiWaktu,
+        indikatorPencapaianKompetensi,
+        metode,
+        description,
       } = req.body;
       if (
         !title ||
-        !price ||
-        !description ||
+        !banner ||
+        !kelas ||
+        !semester ||
+        !jumlahPertemuan ||
         !category ||
-        !about ||
-        !requirements ||
-        !objective
+        !alokasiWaktu ||
+        !indikatorPencapaianKompetensi ||
+        !metode ||
+        !description
       ) {
         return res.status(400).json({ msg: 'Inavild Course Details' });
       }
@@ -152,13 +170,15 @@ const courseCTRL = {
         { _id: req.params.course_id },
         {
           title,
-          price,
-          description,
-          about,
-          objective,
-          requirements,
           banner,
+          kelas,
+          semester,
+          jumlahPertemuan,
           category,
+          alokasiWaktu,
+          indikatorPencapaianKompetensi,
+          metode,
+          description,
         }
       );
       res.json({ msg: 'Course is Updated.' });
@@ -176,12 +196,12 @@ const courseCTRL = {
   },
   reviewCourse: async (req, res) => {
     try {
-      const { rating, comment } = req.body;
+      const { rating, comment, image } = req.body;
       if (!rating || !comment) {
         return res.status(400).json({ msg: 'Invalid Comment.' });
       }
       if (comment.length < 3) {
-        return res.status(400).json({ msg: 'Comment Must be 3 Lengths Long.' });
+        return res.status(400).json({ msg: 'Komentar anda terlalu pendek' });
       }
       const course = await Course.findById(req.params.course_id);
       if (!course) {
@@ -189,10 +209,11 @@ const courseCTRL = {
       }
       const user = req.user.id;
       const author = await Student.findOne({ _id: user });
-      course.comments.push({
+      course.testimoni.push({
         rating,
         comment,
         author: author.name,
+        image,
       });
       course.save();
       res.json({ msg: 'Successfully Commented.' });
@@ -200,22 +221,8 @@ const courseCTRL = {
       return res.status(500).json({ msg: error.message });
     }
   },
-  courseDetails: async (req, res) => {
-    try {
-      const course_id = req.params.course_id;
-      const courseDetails = await Course.findOne({ _id: course_id });
-      const tasks = await Tasks.find({ course_id: course_id }).select(
-        '-course_id'
-      );
-      const lessons = await Lessons.find({ course_id: course_id }).select(
-        '-course_id'
-      );
-      res.json({ courseDetails: courseDetails, tasks, lessons });
-    } catch (error) {
-      return res.status(500).json({ msg: error.message });
-    }
-  },
-  instructorCourse: async (req, res) => {
+
+  adminCourse: async (req, res) => {
     try {
       const courses = await Course.find({ user: req.user.id });
       res.json(courses);
@@ -236,10 +243,10 @@ const courseCTRL = {
         }
       );
 
-      user.enrolled.filter((item) => {
+      req.body.enrolled.filter((item) => {
         return totalEnrolled(
           item.courseDetails._id,
-          item.courseDetails.enrolled
+          item.courseDetails.jumlahSiswa
         );
       });
 
@@ -274,7 +281,7 @@ const totalEnrolled = async (id, oldEnrolled) => {
   await Course.findOneAndUpdate(
     { _id: id },
     {
-      enrolled: 1 + oldEnrolled,
+      jumlahSiswa: 1 + oldEnrolled,
     }
   );
 };

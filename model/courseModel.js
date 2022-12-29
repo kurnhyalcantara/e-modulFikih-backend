@@ -66,10 +66,6 @@ const courseSchema = mongoose.Schema(
       trim: true,
       default: 0,
     },
-    brief: {
-      type: String,
-      trim: true,
-    },
     indikatorPencapaianKompetensi: {
       type: Array,
       default: [],
