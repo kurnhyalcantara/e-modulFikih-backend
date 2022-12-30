@@ -52,6 +52,7 @@ const studentSchema = new mongoose.Schema(
     },
     image: {
       type: Object,
+      default: { url: '' },
     },
   },
   {

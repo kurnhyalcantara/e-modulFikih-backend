@@ -129,6 +129,7 @@ const authCTRL = {
         mobile,
         tanggalLahir,
         jenisKelamin,
+        image,
       } = req.body;
       if (!namaLengkap || !sekolah || !kelas || !nis || !mobile) {
         return res
@@ -146,6 +147,7 @@ const authCTRL = {
           mobile,
           tanggalLahir,
           jenisKelamin,
+          image,
         }
       );
       res.json({ msg: 'Data user telah diperbarui' });
