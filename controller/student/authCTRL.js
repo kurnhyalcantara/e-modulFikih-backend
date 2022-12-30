@@ -16,6 +16,8 @@ const authCTRL = {
       if (firstNumberInMobile === '0') {
         newMobileNumber = mobile.substr(1);
         console.log(newMobileNumber);
+      } else {
+        newMobileNumber = mobile;
       }
       const existingUser = await Student.findOne({ nis });
       if (existingUser) {
@@ -36,17 +38,8 @@ const authCTRL = {
       });
 
       await newStudent.save();
-      const accessToken = createAccessToken({ id: newStudent._id });
-      const refreshToken = createRefreshToken({ id: newStudent._id });
-
-      res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        // secure: true,
-        // sameSite: "none",
-      });
 
       res.json({
-        accessToken,
         user: { name: newStudent.namaLengkap, nis: newStudent.nis },
       });
     } catch (error) {
@@ -121,6 +114,41 @@ const authCTRL = {
         return res.status(400).json({ msg: "User Doesn't Exists." });
       }
       res.json({ student });
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
+  },
+  updateProfile: async (req, res) => {
+    try {
+      const {
+        namaLengkap,
+        namaPanggilan,
+        sekolah,
+        kelas,
+        nis,
+        mobile,
+        tanggalLahir,
+        jenisKelamin,
+      } = req.body;
+      if (!namaLengkap || !sekolah || !kelas || !nis || !mobile) {
+        return res
+          .status(400)
+          .json({ msg: 'Harap isi kolom yang diberi tanda merah' });
+      }
+      await Student.findByIdAndUpdate(
+        { _id: req.params.user_id },
+        {
+          namaLengkap,
+          namaPanggilan,
+          sekolah,
+          kelas,
+          nis,
+          mobile,
+          tanggalLahir,
+          jenisKelamin,
+        }
+      );
+      res.json({ msg: 'Data user telah diperbarui' });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }

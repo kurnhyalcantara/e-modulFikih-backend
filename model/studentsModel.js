@@ -10,10 +10,12 @@ const studentSchema = new mongoose.Schema(
     namaPanggilan: {
       type: String,
       trim: true,
+      default: '',
     },
     sekolah: {
       type: String,
       trim: true,
+      default: '',
     },
     kelas: {
       type: String,
