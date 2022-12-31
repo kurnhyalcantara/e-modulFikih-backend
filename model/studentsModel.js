@@ -54,6 +54,9 @@ const studentSchema = new mongoose.Schema(
       type: Object,
       default: { url: '' },
     },
+    avatarLetter: {
+      type: String,
+    },
   },
   {
     timestamps: true,

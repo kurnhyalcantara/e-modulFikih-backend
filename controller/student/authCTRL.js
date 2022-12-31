@@ -28,12 +28,14 @@ const authCTRL = {
           .json({ msg: 'Password harus lebih dari 4 karakter' });
       }
       const hashPass = await bcrypt.hash(password, 10);
+      const avatarLetter = namaLengkap.charAt(0);
       const newStudent = new Student({
         namaLengkap,
         nis,
         kelas,
         mobile: newMobileNumber,
         password: hashPass,
+        avatarLetter: avatarLetter,
       });
 
       await newStudent.save();
@@ -73,7 +75,7 @@ const authCTRL = {
       } else {
         newMobileNumber = mobile;
       }
-      const user = await Student.findOne({ newMobileNumber });
+      const user = await Student.findOne({ mobile: newMobileNumber });
       if (!user) {
         return res.status(400).json({
           id: 'account_not_registered',
@@ -82,7 +84,9 @@ const authCTRL = {
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ msg: 'Password salah' });
+        return res
+          .status(400)
+          .json({ id: 'wrong_password', msg: 'Password salah' });
       }
 
       const accessToken = createAccessToken({ id: user._id });
@@ -176,12 +180,10 @@ const authCTRL = {
       const user = await Student.findOne({ _id: req.params.user_id });
       const isMatch = await bcrypt.compare(oldPassword, user.password);
       if (!isMatch) {
-        return res
-          .status(400)
-          .json({
-            id: 'old-password-not-match',
-            msg: 'Password lama tidak cocok',
-          });
+        return res.status(400).json({
+          id: 'old-password-not-match',
+          msg: 'Password lama tidak cocok',
+        });
       }
       if (newPassword < 4) {
         return res
