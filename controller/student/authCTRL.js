@@ -15,11 +15,10 @@ const authCTRL = {
       const firstNumberInMobile = mobile.charAt(0);
       if (firstNumberInMobile === '0') {
         newMobileNumber = mobile.substr(1);
-        console.log(newMobileNumber);
       } else {
         newMobileNumber = mobile;
       }
-      const existingUser = await Student.findOne({ nis });
+      const existingUser = await Student.findOne({ mobile: newMobileNumber });
       if (existingUser) {
         return res.status(400).json({ msg: 'Akun sudah terdaftar' });
       }
@@ -62,19 +61,28 @@ const authCTRL = {
   },
   login: async (req, res) => {
     try {
-      const { nis, password } = req.body;
-      if (!nis || !password) {
+      const { mobile, password } = req.body;
+      if (!mobile || !password) {
         return res
           .status(400)
-          .json({ msg: 'Harap masukkan data dengan benar' });
+          .json({ msg: 'Harap isi semua kolom yang diperlukan' });
       }
-      const user = await Student.findOne({ nis });
+      const firstNumberInMobile = mobile.charAt(0);
+      if (firstNumberInMobile === '0') {
+        newMobileNumber = mobile.substr(1);
+      } else {
+        newMobileNumber = mobile;
+      }
+      const user = await Student.findOne({ newMobileNumber });
       if (!user) {
-        return res.status(400).json({ msg: 'Akun tidak terdaftar' });
+        return res.status(400).json({
+          id: 'account_not_registered',
+          msg: 'No. HP tidak terdaftar',
+        });
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ msg: 'Password tidak cocok.' });
+        return res.status(400).json({ msg: 'Password salah' });
       }
 
       const accessToken = createAccessToken({ id: user._id });
@@ -153,6 +161,49 @@ const authCTRL = {
       res.json({ msg: 'Data user telah diperbarui' });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
+    }
+  },
+
+  updatePassword: async (req, res) => {
+    try {
+      const { oldPassword, newPassword, confirmNewPassword } = req.body;
+
+      if (!oldPassword || !newPassword || !confirmNewPassword) {
+        return res
+          .status(400)
+          .json({ msg: 'Harap isi semua kolom yang diminta' });
+      }
+      const user = await Student.findOne({ _id: req.params.user_id });
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+        return res
+          .status(400)
+          .json({
+            id: 'old-password-not-match',
+            msg: 'Password lama tidak cocok',
+          });
+      }
+      if (newPassword < 4) {
+        return res
+          .status(400)
+          .json({ msg: 'Password baru terlalu pendek. Minimal 4 karakter' });
+      }
+      if (newPassword !== confirmNewPassword) {
+        return res
+          .status(400)
+          .json({ msg: 'Password baru tidak cocok dengan konfirmasinya' });
+      }
+      const hashPass = await bcrypt.hash(newPassword, 10);
+      await Student.findByIdAndUpdate(
+        { _id: req.params.user_id },
+        {
+          password: hashPass,
+        }
+      ).then(() => {
+        res.json({ msg: 'Password berhasil diubah' });
+      });
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
     }
   },
 };

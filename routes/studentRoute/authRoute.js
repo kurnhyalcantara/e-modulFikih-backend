@@ -13,5 +13,11 @@ router.put(
   authStudent,
   authCTRL.updateProfile
 );
+router.put(
+  '/profile/update_password/:user_id',
+  auth,
+  authStudent,
+  authCTRL.updatePassword
+);
 
 module.exports = router;
