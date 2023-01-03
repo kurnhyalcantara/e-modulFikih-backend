@@ -4,6 +4,7 @@ const Lessons = require('../../model/lessonModel');
 const Instructor = require('../../model/instructorModel');
 const Student = require('../../model/studentsModel');
 const Admin = require('../../model/adminModel');
+const bcrypt = require('bcrypt');
 
 class APIfeatures {
   constructor(query, queryString) {
@@ -49,6 +50,7 @@ const courseCTRL = {
         indikatorPencapaianKompetensi,
         metode,
         description,
+        token,
       } = req.body;
       if (
         !title ||
@@ -60,7 +62,8 @@ const courseCTRL = {
         !alokasiWaktu ||
         !indikatorPencapaianKompetensi ||
         !metode ||
-        !description
+        !description ||
+        !token
       ) {
         return res.status(400).json({ msg: 'Invalid Course Credentials.' });
       }
@@ -69,6 +72,7 @@ const courseCTRL = {
       }
       const user = req.user.id;
       const admin = await Admin.findOne({ _id: user }).select('-password');
+      const hashToken = await bcrypt.hash(token, 10);
       const newCourse = new Course({
         creator: user,
         title,
@@ -82,6 +86,7 @@ const courseCTRL = {
         metode,
         description,
         instructor: admin,
+        token: hashToken,
       });
       await newCourse.save();
       res.json({ msg: 'Created a Course.', course: newCourse });
@@ -196,9 +201,9 @@ const courseCTRL = {
   },
   reviewCourse: async (req, res) => {
     try {
-      const { rating, comment, image } = req.body;
+      const { rating, comment } = req.body;
       if (!rating || !comment) {
-        return res.status(400).json({ msg: 'Invalid Comment.' });
+        return res.status(400).json({ msg: 'Komentar tidak valid' });
       }
       if (comment.length < 3) {
         return res.status(400).json({ msg: 'Komentar anda terlalu pendek' });
@@ -212,8 +217,8 @@ const courseCTRL = {
       course.testimoni.push({
         rating,
         comment,
-        author: author.name,
-        image,
+        author: author.namaLengkap,
+        image: author.image,
       });
       course.save();
       res.json({ msg: 'Successfully Commented.' });
@@ -233,24 +238,30 @@ const courseCTRL = {
 
   enrollCourse: async (req, res) => {
     try {
+      const { enrolled, token } = req.body;
       const user = await Student.findById(req.user.id);
       if (!user) return res.status(400).json({ msg: 'User does not exist.' });
 
-      await Student.findOneAndUpdate(
-        { _id: req.user.id },
-        {
-          enrolled: req.body.enrolled,
-        }
-      );
-
-      req.body.enrolled.filter((item) => {
-        return totalEnrolled(
-          item.courseDetails._id,
-          item.courseDetails.jumlahSiswa
+      const courseId = req.params.course_id;
+      const course = await Course.findOne({ courseId });
+      const isMatchToken = await bcrypt.compare(token, course.token);
+      if (!isMatchToken) {
+        return res.status(500).json({ msg: 'Token Salah' });
+      } else {
+        await Student.findOneAndUpdate(
+          { _id: req.user.id },
+          {
+            enrolled: enrolled,
+          }
         );
-      });
-
-      return res.json({ msg: 'Enrolled' });
+        req.body.enrolled.filter((item) => {
+          return totalEnrolled(
+            item.courseDetails._id,
+            item.courseDetails.jumlahSiswa
+          );
+        });
+        return res.json({ msg: 'Enrolled' });
+      }
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }

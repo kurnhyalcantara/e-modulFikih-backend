@@ -12,7 +12,6 @@ const commentSchema = mongoose.Schema(
     },
     author: {
       type: String,
-      required: true,
     },
     image: {
       type: Object,
@@ -85,6 +84,10 @@ const courseSchema = mongoose.Schema(
       require: true,
     },
     testimoni: [commentSchema],
+    token: {
+      type: String,
+      require: true,
+    },
   },
   {
     timestamps: true,
