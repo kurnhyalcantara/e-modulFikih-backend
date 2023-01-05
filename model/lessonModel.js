@@ -1,16 +1,12 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const lessonSchema = mongoose.Schema(
   {
     course_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "course",
+      ref: 'course',
     },
-    title: {
-      type: String,
-      required: true,
-    },
-    videos: {
+    materi: {
       type: Array,
       default: [],
     },
@@ -20,4 +16,4 @@ const lessonSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Lessons", lessonSchema);
+module.exports = mongoose.model('Lessons', lessonSchema);
