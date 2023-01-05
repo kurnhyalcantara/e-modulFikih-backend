@@ -40,6 +40,10 @@ const taskCTRL = {
       if (!course) {
         return res.status(400).json({ msg: 'Course not Found.' });
       }
+      const lesson = await Lessons.findOne({ course_id: course_id });
+      if (lesson) {
+        return res.status(400).json({ msg: 'Lesson telah ada' });
+      }
       const newLesson = new Lessons({
         course_id,
         materi,
