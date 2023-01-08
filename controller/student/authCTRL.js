@@ -48,20 +48,24 @@ const authCTRL = {
     }
   },
   refreshToken: async (req, res) => {
-    const rf_token = req.cookies.refreshToken;
-    console.log(rf_token);
-    if (!rf_token) {
-      return res.status(400).json({ msg: 'Silahkan Login atau Buat Akun' });
-    }
-    jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, student) => {
-      if (err) {
-        console.log(err);
+    try {
+      const rf_token = req.cookies.refreshToken;
+      if (!rf_token) {
         return res.status(400).json({ msg: 'Silahkan Login atau Buat Akun' });
-      }
-      const accessToken = createAccessToken({ id: student.id });
+      } else {
+        jwt.verify(
+          rf_token,
+          process.env.REFRESH_TOKEN_SECRET,
+          (err, student) => {
+            const accessToken = createAccessToken({ id: student.id });
 
-      res.json({ accessToken });
-    });
+            res.json({ accessToken, rf_token });
+          }
+        );
+      }
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
   },
   login: async (req, res) => {
     try {
