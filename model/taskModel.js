@@ -1,51 +1,20 @@
-const mongoose = require("mongoose");
-
-const submittedTaskSchema = mongoose.Schema(
-  {
-    student: {
-      type: Object,
-      required: true,
-    },
-    marks: {
-      type: String,
-    },
-    answer: {
-      type: String,
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+const mongoose = require('mongoose');
 
 const taskSchema = mongoose.Schema(
   {
     course_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "course",
+      ref: 'course',
     },
-    title: {
-      type: String,
+    submission: {
+      type: Array,
       required: true,
+      default: [],
     },
-    description: {
-      type: String,
-      required: true,
-    },
-    start: {
-      type: String,
-      required: true,
-    },
-    end: {
-      type: String,
-      required: true,
-    },
-    submissions: [submittedTaskSchema],
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("Tasks", taskSchema);
+module.exports = mongoose.model('Tasks', taskSchema);
