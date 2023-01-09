@@ -38,9 +38,9 @@ const adminCTRL = {
       const refreshToken = createRefreshToken({ id: newAdmin._id });
 
       res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        // secure: true,
-        // sameSite: "none",
+        // httpOnly: true,
+        secure: true,
+        sameSite: 'none',
       });
 
       res.json({
@@ -88,9 +88,9 @@ const adminCTRL = {
       const refreshToken = createRefreshToken({ id: user._id });
 
       res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        // secure: true,
-        // sameSite: "none",
+        // httpOnly: true,
+        secure: true,
+        sameSite: 'none',
       });
 
       res.json({
@@ -108,10 +108,10 @@ const adminCTRL = {
   logout: async (req, res) => {
     try {
       res.clearCookie('refreshToken', {
-        httpOnly: true,
+        // httpOnly: true,
         expires: new Date(0),
-        // secure: true,
-        // sameSite: "none",
+        secure: true,
+        sameSite: 'none',
       });
       return res.json({ msg: 'Logged Out' });
     } catch (error) {
