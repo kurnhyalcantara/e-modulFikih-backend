@@ -16,6 +16,26 @@ const taskCTRL = {
       return res.status(500).json({ msg: error.message });
     }
   },
+  setScore: async (req, res) => {
+    try {
+      const { score } = req.body;
+      const courseId = req.params.course_id;
+      const user = await Student.findById(req.user.id);
+      if (!user) return res.status(400).json({ msg: 'User does not exist.' });
+      await Student.findOneAndUpdate(
+        { _id: req.user.id },
+        {
+          score: {
+            courseId: courseId,
+            score: score,
+          },
+        }
+      );
+      return res.json({ msg: `Score anda: ${score}` });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
   getSingleTask: async (req, res) => {
     try {
       const course_id = req.params.task_id;

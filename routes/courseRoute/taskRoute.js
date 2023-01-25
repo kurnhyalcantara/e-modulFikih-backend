@@ -14,7 +14,8 @@ router
 router
   .route('/task/:course_id')
   .put(auth, authStudent, taskCTRL.submitTask)
-  .get(auth, taskCTRL.getSingleTask);
+  .get(auth, taskCTRL.getSingleTask)
+  .patch(auth, taskCTRL.setScore);
 
 router
   .route('/task_update/:task_id')

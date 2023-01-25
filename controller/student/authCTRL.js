@@ -7,7 +7,7 @@ const authCTRL = {
     try {
       const { namaLengkap, nis, kelas, mobile, password } = req.body;
 
-      if (!namaLengkap || !nis || !kelas || !mobile || !password) {
+      if (!namaLengkap || !kelas || !mobile || !password) {
         return res
           .status(400)
           .json({ msg: 'Harap isi semua data yang dibutuhkan' });
